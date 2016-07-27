@@ -18,11 +18,8 @@ module Apartment
 
         database = @processor.call(request)
 
-        if database
-          Apartment::Tenant.switch(database) { @app.call(env) }
-        else
-          @app.call(env)
-        end
+        Apartment::Tenant.switch!(database) if database
+        @app.call(env)
       end
 
       def parse_database_name(request)
